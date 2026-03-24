@@ -10,21 +10,23 @@ import (
 	"github.com/duwi2024/onvif"
 	"github.com/duwi2024/onvif/sdk"
 	"github.com/duwi2024/onvif/event"
+	xsdOnvif "github.com/duwi2024/onvif/xsd/onvif"
 )
 
 // Call_CreatePullPointSubscription forwards the call to dev.CallMethod() then parses the payload of the reply as a CreatePullPointSubscriptionResponse.
-func Call_CreatePullPointSubscription(ctx context.Context, dev *onvif.Device, request event.CreatePullPointSubscription) (event.CreatePullPointSubscriptionResponse, error) {
+func Call_CreatePullPointSubscription(ctx context.Context, dev *onvif.Device, request event.CreatePullPointSubscription) (event.CreatePullPointSubscriptionResponse, *xsdOnvif.Fault,error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
+			Fault *xsdOnvif.Fault
 			CreatePullPointSubscriptionResponse event.CreatePullPointSubscriptionResponse
 		}
 	}
 	var reply Envelope
 	if httpReply, err := dev.CallMethod(request); err != nil {
-		return reply.Body.CreatePullPointSubscriptionResponse, errors.Annotate(err, "call")
+		return reply.Body.CreatePullPointSubscriptionResponse, nil,errors.Annotate(err, "call")
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply, "CreatePullPointSubscription")
-		return reply.Body.CreatePullPointSubscriptionResponse, errors.Annotate(err, "reply")
+		return reply.Body.CreatePullPointSubscriptionResponse,reply.Body.Fault , errors.Annotate(err, "reply")
 	}
 }

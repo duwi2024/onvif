@@ -60,7 +60,7 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	} else {
-		// You could use https://github.com/use-go/onvif/gosoap for pretty printing response
+		// You could use https://github.com/duwi2024/onvif/gosoap for pretty printing response
 		fmt.Println(createUserResponse)
 	}
 

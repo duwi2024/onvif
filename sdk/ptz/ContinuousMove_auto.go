@@ -10,21 +10,23 @@ import (
 	"github.com/duwi2024/onvif"
 	"github.com/duwi2024/onvif/sdk"
 	"github.com/duwi2024/onvif/ptz"
+	xsdOnvif "github.com/duwi2024/onvif/xsd/onvif"
 )
 
 // Call_ContinuousMove forwards the call to dev.CallMethod() then parses the payload of the reply as a ContinuousMoveResponse.
-func Call_ContinuousMove(ctx context.Context, dev *onvif.Device, request ptz.ContinuousMove) (ptz.ContinuousMoveResponse, error) {
+func Call_ContinuousMove(ctx context.Context, dev *onvif.Device, request ptz.ContinuousMove) (ptz.ContinuousMoveResponse, *xsdOnvif.Fault,error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
+			Fault *xsdOnvif.Fault
 			ContinuousMoveResponse ptz.ContinuousMoveResponse
 		}
 	}
 	var reply Envelope
 	if httpReply, err := dev.CallMethod(request); err != nil {
-		return reply.Body.ContinuousMoveResponse, errors.Annotate(err, "call")
+		return reply.Body.ContinuousMoveResponse, nil,errors.Annotate(err, "call")
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply, "ContinuousMove")
-		return reply.Body.ContinuousMoveResponse, errors.Annotate(err, "reply")
+		return reply.Body.ContinuousMoveResponse,reply.Body.Fault , errors.Annotate(err, "reply")
 	}
 }

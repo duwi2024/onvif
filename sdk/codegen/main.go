@@ -19,14 +19,14 @@ package {{.Package}}
 import (
 	"context"
 	"github.com/juju/errors"
-	"github.com/use-go/onvif"
-	"github.com/use-go/onvif/sdk"
-	"github.com/use-go/onvif/{{.StructPackage}}"
-	xsdOnvif "github.com/use-go/onvif/xsd/onvif"
+	"github.com/duwi2024/onvif"
+	"github.com/duwi2024/onvif/sdk"
+	"github.com/duwi2024/onvif/{{.StructPackage}}"
+	xsdOnvif "github.com/duwi2024/onvif/xsd/onvif"
 )
 
 // Call_{{.TypeRequest}} forwards the call to dev.CallMethod() then parses the payload of the reply as a {{.TypeReply}}.
-func Call_{{.TypeRequest}}(ctx context.Context, dev *onvif.Device, request {{.StructPackage}}.{{.TypeRequest}}) ({{.StructPackage}}.{{.TypeReply}}, error) {
+func Call_{{.TypeRequest}}(ctx context.Context, dev *onvif.Device, request {{.StructPackage}}.{{.TypeRequest}}) ({{.StructPackage}}.{{.TypeReply}}, *xsdOnvif.Fault,error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
@@ -36,10 +36,10 @@ func Call_{{.TypeRequest}}(ctx context.Context, dev *onvif.Device, request {{.St
 	}
 	var reply Envelope
 	if httpReply, err := dev.CallMethod(request); err != nil {
-		return reply.Body.{{.TypeReply}}, errors.Annotate(err, "call")
+		return reply.Body.{{.TypeReply}}, nil,errors.Annotate(err, "call")
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply, "{{.TypeRequest}}")
-		return reply.Body.{{.TypeReply}}, errors.Annotate(err, "reply")
+		return reply.Body.{{.TypeReply}},reply.Body.Fault , errors.Annotate(err, "reply")
 	}
 }
 `

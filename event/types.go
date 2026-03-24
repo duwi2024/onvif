@@ -49,15 +49,15 @@ type AbsoluteOrRelativeTimeType xsd.AnySimpleType //wsnt http://docs.oasis-open.
 
 // EndpointReferenceType in ws-addr
 type EndpointReferenceType struct { //wsa http://www.w3.org/2005/08/addressing/ws-addr.xsd
-	Address             AttributedURIType       `xml:"wsa:Address"`
-	ReferenceParameters ReferenceParametersType `xml:"wsa:ReferenceParameters"`
-	Metadata            MetadataType            `xml:"wsa:Metadata"`
+	Address             AttributedURIType
+	ReferenceParameters ReferenceParametersType
+	Metadata            MetadataType
 }
 
 type EndpointReferenceResType struct { //wsa5 http://www.w3.org/2005/08/addressing/ws-addr.xsd
-	Address             AttributedURIType       `xml:"Address"`
-	ReferenceParameters ReferenceParametersType `xml:"ReferenceParameters"`
-	Metadata            MetadataType            `xml:"Metadata"`
+	Address             AttributedURIType
+	ReferenceParameters ReferenceParametersType
+	Metadata            MetadataType
 }
 
 // FilterType struct

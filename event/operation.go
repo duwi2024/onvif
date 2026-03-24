@@ -42,8 +42,8 @@ type Renew struct { //http://docs.oasis-open.org/wsn/b-2.xsd
 
 // RenewResponse for Renew action
 type RenewResponse struct { //http://docs.oasis-open.org/wsn/b-2.xsd
-	TerminationTime TerminationTime `xml:"wsnt:TerminationTime"`
-	CurrentTime     CurrentTime     `xml:"wsnt:CurrentTime"`
+	TerminationTime TerminationTime
+	CurrentTime     CurrentTime
 }
 
 // Unsubscribe action for Unsubscribe event topic
@@ -61,7 +61,7 @@ type CreatePullPointSubscription struct {
 	XMLName                string                     `xml:"tev:CreatePullPointSubscription"`
 	Filter                 FilterType                 `xml:"tev:Filter"`
 	InitialTerminationTime AbsoluteOrRelativeTimeType `xml:"tev:InitialTerminationTime"`
-	SubscriptionPolicy     SubscriptionPolicy         `xml:"tev:sSubscriptionPolicy"`
+	SubscriptionPolicy     SubscriptionPolicy         `xml:"tev:SubscriptionPolicy"`
 }
 
 // CreatePullPointSubscriptionResponse action
@@ -101,7 +101,7 @@ type PullMessages struct {
 type PullMessagesResponse struct {
 	CurrentTime         CurrentTime
 	TerminationTime     TerminationTime
-	NotificationMessage NotificationMessage
+	NotificationMessage []NotificationMessage
 }
 
 // PullMessagesFaultResponse response type
