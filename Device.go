@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/beevik/etree"
 	"github.com/duwi2024/onvif/device"
@@ -76,11 +77,12 @@ type DeviceInfo struct {
 // struct represents an abstract ONVIF device.
 // It contains methods, which helps to communicate with ONVIF device
 type Device struct {
-	params       DeviceParams
-	endpoints    map[string]string
-	info         DeviceInfo
-	headerAction *HeaderAction
-	headerTo     *HeaderTo
+	params         DeviceParams
+	endpoints      map[string]string
+	info           DeviceInfo
+	headerAction   *HeaderAction
+	headerTo       *HeaderTo
+	PullFaildCount int
 }
 
 type HeaderAction struct {
@@ -100,6 +102,7 @@ type DeviceParams struct {
 	Username   string
 	Password   string
 	HttpClient *http.Client
+	ReqUtcTime *time.Time
 }
 
 // GetServices return available endpoints
@@ -345,7 +348,11 @@ func (dev Device) callMethodDo(endpoint string, method interface{}) (*http.Respo
 
 	//Auth Handling
 	if dev.params.Username != "" && dev.params.Password != "" {
-		soap.AddWSSecurity(dev.params.Username, dev.params.Password)
+		if dev.params.ReqUtcTime != nil {
+			soap.AddWSSecurityWithTime(dev.params.Username, dev.params.Password, *dev.params.ReqUtcTime)
+		} else {
+			soap.AddWSSecurity(dev.params.Username, dev.params.Password)
+		}
 	}
 
 	return networking.SendSoap(dev.params.HttpClient, endpoint, soap.String())
